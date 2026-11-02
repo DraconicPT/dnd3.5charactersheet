@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D&amp;D 3.5 Character Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;1,600&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e6ebf2;--card:#f7f9fc;--ink:#1b2433;--mut:#5d6b80;--acc:#1f7a72;--brass:#9a7616;--line:#bcc7d6;--in:#fff;--bad:#b3261e;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151e;--card:#182030;--ink:#e3e9f3;--mut:#93a1b7;--acc:#4fc3b6;--brass:#d9b24c;--line:#2e3a50;--in:#0f1623;--bad:#ff8a80;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10151e;--card:#182030;--ink:#e3e9f3;--mut:#93a1b7;--acc:#4fc3b6;--brass:#d9b24c;--line:#2e3a50;--in:#0f1623;--bad:#ff8a80;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 "Alegreya Sans",system-ui,sans-serif}
+main{max-width:1200px;margin:0 auto;padding:16px}
+h1,h2{font-family:Alegreya,Georgia,serif;margin:0}
+h1{font-size:30px;font-style:italic}
+h2{font-size:20px;color:var(--acc);border-bottom:2px solid var(--brass);padding-bottom:3px;margin-bottom:10px}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px}
+.c{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px;min-width:0}
+.w{grid-column:1/-1}
+label{display:flex;flex-direction:column;font-size:12.5px;color:var(--mut);gap:2px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--in);border:1px solid var(--line);border-radius:4px;padding:4px 6px;min-width:0}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+input[type=number]{width:62px}
+#ab input{width:54px}
+textarea{width:100%;min-height:90px;resize:vertical}
+.f{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.f input,.f select{width:100%}
+table{border-collapse:collapse;width:100%}
+th{font-size:12.5px;text-align:left;color:var(--mut);font-weight:500;padding:2px 4px}
+td{padding:2px 4px;border-top:1px solid var(--line)}
+.sc{overflow-x:auto}
+.t{font-weight:700;text-align:center;font-size:17px}
+.bad{border-color:var(--bad);color:var(--bad)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-bottom:12px}
+.tile{border:1px solid var(--line);border-radius:6px;padding:6px;text-align:center;background:var(--in)}
+.tile b{display:block;font:700 24px Alegreya,Georgia,serif;color:var(--acc)}
+.tile span{font-size:12px;color:var(--mut)}
+.n{color:var(--mut);margin:8px 0 0}
+button{font:inherit;background:var(--acc);color:var(--bg);border:0;border-radius:4px;padding:6px 12px;cursor:pointer}
+sup{color:var(--brass)}
+@media print{button{display:none}body{background:#fff}}
+</style></head><body><main>
+<header><h1>D&amp;D 3.5 Character Builder</h1><div><button id="rs">Reset sheet</button> <button onclick="window.print()">Print</button></div></header>
+<div class="g">
+<section class="c"><h2>Character</h2>
+<div class="f">
+<label>Name<input id="nm"></label><label>Player<input id="pl"></label>
+<label>Race<select id="race"></select></label><label>Alignment<select id="al"></select></label>
+<label>Deity<input id="dt"></label><label>Experience<input id="xp" type="number" min="0" value="0"></label><label>Age<input id="age" type="number" min="0" value="20"></label>
+</div>
+<table id="ct" style="margin-top:10px"><tr><th>Class<th>Level</tr></table>
+<p class="n" id="sum"></p></section>
+
+<section class="c"><h2>Abilities</h2>
+<div class="sc"><table id="ab"><tr><th>Ability<th>Base<th>Racial<th>Item<th>Bonus<th>Aging<th>Mod<th>Total<th>Mod</tr></table></div>
+<p class="n" id="pb"></p></section>
+
+<section class="c"><h2>Combat</h2>
+<div class="tiles">
+<div class="tile"><b id="o_hp">0</b><span>Max HP</span></div>
+<div class="tile"><b id="o_hc">0</b><span>Current HP</span></div>
+<div class="tile"><b id="o_ac">10</b><span>Armor Class</span></div>
+<div class="tile"><b id="o_tc">10</b><span>Touch</span></div>
+<div class="tile"><b id="o_ff">10</b><span>Flat-footed</span></div>
+<div class="tile"><b id="o_in">+0</b><span>Initiative</span></div>
+<div class="tile"><b id="o_bab">+0</b><span>Base attack</span></div>
+<div class="tile"><b id="o_gr">+0</b><span>Grapple</span></div>
+<div class="tile"><b id="o_sp">30</b><span>Speed (ft)</span></div>
+<div class="tile"><b id="o_fo">+0</b><span>Fortitude</span></div>
+<div class="tile"><b id="o_re">+0</b><span>Reflex</span></div>
+<div class="tile"><b id="o_wi">+0</b><span>Will</span></div>
+</div>
+<div class="f" id="deff"></div>
+<p class="n" id="acn"></p></section>
+
+<section class="c w"><h2>Attacks</h2><div class="sc"><table id="at"><tr><th>Weapon<th>Type<th>Grip<th>Atk misc<th>Damage dice<th>Dmg misc<th>Attack<th>Damage<th>Critical</tr></table></div>
+<p class="n">Melee uses Str for attack and damage. Finesse uses Dex to hit, Str for damage. Ranged uses Dex with no damage bonus. Thrown uses Dex to hit, Str for damage. Two-handed grip applies 1.5x Str, off-hand 0.5x.</p></section>
+
+<section class="c w"><h2>Skills</h2>
+<p class="n" id="skn" style="margin:0 0 8px"></p>
+<div class="sc"><table id="sk"><tr><th>Class<th>Skill<th>Key<th>Ranks<th>Misc<th>Total</tr></table></div>
+<p class="n"><sup>T</sup> trained only, * armor check penalty applies. Tick Class for class skills (+3 once you hold a rank). Ranks over the maximum turn red.</p></section>
+
+<section class="c"><h2>Spellcasting</h2>
+<label style="max-width:200px">Casting ability<select id="spa"><option value="int">Intelligence<option value="wis">Wisdom<option value="cha">Charisma</select></label>
+<div class="sc"><table id="spt"><tr><th>Lvl<th>Save DC<th>Bonus<th>Base/day<th>Total</tr></table></div>
+<p class="n">Enter base spells per day from your class table. Bonus spells come from the casting ability.</p></section>
+
+<section class="c"><h2>Money &amp; Carrying</h2>
+<div class="f" id="mny"></div>
+<p class="n" id="ldn"></p></section>
+
+<section class="c w"><h2>Feats</h2><datalist id="fl"></datalist><div class="sc"><table id="ftb"><tr><th>Feat (type or pick)<th>Custom effect<th>Value<th>Applied automatically</tr></table></div><p class="n">Known feats apply their bonuses everywhere on the sheet. For any other feat (homebrew included), type its name and choose a custom effect and value, for example Skill Focus as +3 on one skill. Weapon feats apply to all attack rows. Power Attack and Combat Expertise points are entered under Combat.</p></section>
+<section class="c"><h2>Class &amp; Racial Features</h2><textarea id="ft" placeholder="Class features, racial traits, special abilities"></textarea></section>
+<section class="c"><h2>Equipment</h2><textarea id="eq" placeholder="Weapons, armor, gear"></textarea></section>
+<section class="c"><h2>Notes</h2><textarea id="nt" placeholder="Backstory, languages, DR, SR"></textarea></section>
+</div></main>
+<script>
+const $=i=>document.getElementById(i),v=i=>$(i).value,num=i=>parseFloat(v(i))||0,mod=s=>Math.floor((s-10)/2),sg=n=>(n>=0?'+':'')+n,T=(i,t)=>{$(i).textContent=t};
+const AB=['str','dex','con','int','wis','cha'];
+const AGE={Human:[35,53,70],Dwarf:[125,188,250],Elf:[175,263,350],Gnome:[100,150,200],'Half-Elf':[62,93,125],'Half-Orc':[30,45,60],Halfling:[50,75,100]};
+const RACE={Human:{sp:30,m:{}},Dwarf:{sp:20,m:{con:2,cha:-2}},Elf:{sp:30,m:{dex:2,con:-2}},Gnome:{sz:1,sp:20,m:{con:2,str:-2}},'Half-Elf':{sp:30,m:{}},'Half-Orc':{sp:30,m:{str:2,int:-2,cha:-2}},Halfling:{sz:1,sp:20,m:{dex:2,str:-2}},Other:{sp:30,m:{}}};
+const CL={'\u2014':{hd:0,b:0,sp:0,f:0,r:0,w:0},Barbarian:{hd:12,b:1,sp:4,f:1,r:0,w:0},Bard:{hd:6,b:.75,sp:6,f:0,r:1,w:1},Cleric:{hd:8,b:.75,sp:2,f:1,r:0,w:1},Druid:{hd:8,b:.75,sp:4,f:1,r:0,w:1},Fighter:{hd:10,b:1,sp:2,f:1,r:0,w:0},Monk:{hd:8,b:.75,sp:4,f:1,r:1,w:1},Paladin:{hd:10,b:1,sp:2,f:1,r:0,w:0},Ranger:{hd:8,b:1,sp:6,f:1,r:1,w:0},Rogue:{hd:6,b:.75,sp:8,f:0,r:1,w:0},Sorcerer:{hd:4,b:.5,sp:2,f:0,r:0,w:1},Wizard:{hd:4,b:.5,sp:2,f:0,r:0,w:1}};
+const AL=['Lawful Good','Neutral Good','Chaotic Good','Lawful Neutral','True Neutral','Chaotic Neutral','Lawful Evil','Neutral Evil','Chaotic Evil'];
+const SK=[['Appraise','int',''],['Balance','dex','A'],['Bluff','cha',''],['Climb','str','A'],['Concentration','con',''],['Craft','int',''],['Decipher Script','int','T'],['Diplomacy','cha',''],['Disable Device','int','T'],['Disguise','cha',''],['Escape Artist','dex','A'],['Forgery','int',''],['Gather Information','cha',''],['Handle Animal','cha','T'],['Heal','wis',''],['Hide','dex','A'],['Intimidate','cha',''],['Jump','str','A'],['Knowledge (arcana)','int','T'],['Knowledge (dungeoneering)','int','T'],['Knowledge (history)','int','T'],['Knowledge (local)','int','T'],['Knowledge (nature)','int','T'],['Knowledge (religion)','int','T'],['Knowledge (the planes)','int','T'],['Listen','wis',''],['Move Silently','dex','A'],['Open Lock','dex','T'],['Perform','cha',''],['Profession','wis','T'],['Ride','dex',''],['Search','int',''],['Sense Motive','wis',''],['Sleight of Hand','dex','TA'],['Speak Language','','T'],['Spellcraft','int','T'],['Spot','wis',''],['Survival','wis',''],['Swim','str','A'],['Tumble','dex','TA'],['Use Magic Device','cha','T'],['Use Rope','dex','']];
+const PB={8:0,9:1,10:2,11:3,12:4,13:5,14:6,15:8,16:10,17:13,18:16};
+const opts=(o,s)=>(Array.isArray(o)?o:Object.keys(o)).map(k=>`<option${k===s?' selected':''}>${k}</option>`).join('');
+const fld=(i,l,x='')=>`<label>${l}<input type="number" id="${i}" ${x}></label>`;
+// build UI
+$('race').innerHTML=opts(RACE);$('al').innerHTML=opts(AL,'True Neutral');
+for(let i=0;i<3;i++)$('ct').insertAdjacentHTML('beforeend',`<tr><td><select id="c${i}">${opts(CL,i?'':'Fighter')}</select><td><input type="number" id="l${i}" min="0" max="40" value="${i?0:1}">`);
+AB.forEach(a=>$('ab').insertAdjacentHTML('beforeend',`<tr><td>${a.toUpperCase()}<td><input type="number" id="b_${a}" value="10"><td id="r_${a}">+0<td><input type="number" id="i_${a}" value="0"><td><input type="number" id="m_${a}" value="0"><td id="g_${a}">+0<td><input type="number" id="x_${a}" value="0"><td class="t" id="t_${a}">10<td class="t" id="d_${a}">+0`));
+$('deff').innerHTML=[['ar','Armor bonus'],['sh','Shield bonus'],['md','Max Dex (blank = none)'],['acp','Check penalty (positive)'],['na','Natural armor'],['df','Deflection'],['dg','Dodge'],['ma','Misc AC'],['im','Initiative misc'],['sf','Fort misc'],['sr','Ref misc'],['sw','Will misc'],['hpm','HP misc'],['hproll','Rolled HP (blank = avg)'],['hpc','Current HP (blank = max)'],['spm','Speed misc'],['pa','Power Attack points'],['ce','Combat Expertise points']].map(([i,l])=>fld(i,l)).join('');
+$('mny').innerHTML=[['pp','Platinum'],['gp','Gold'],['sv','Silver'],['cp','Copper'],['gear','Gear weight (lb)']].map(([i,l])=>fld(i,l,'min="0"')).join('');
+for(let i=0;i<4;i++)$('at').insertAdjacentHTML('beforeend',`<tr><td><input id="an${i}" size="12"><td><select id="at${i}"><option value="M">Melee<option value="F">Finesse<option value="R">Ranged<option value="T">Thrown</select><td><select id="ah${i}"><option value="1">1-handed<option value="1.5">2-handed<option value="0.5">Off-hand</select><td><input type="number" id="am${i}"><td><input id="ad${i}" size="6" placeholder="1d8"><td><input type="number" id="ax${i}"><td class="t" id="ao${i}"><td class="t" id="ag${i}"><td><input id="ac${i}" size="8" placeholder="19-20/x2">`);
+SK.forEach(([n,a,f],i)=>$('sk').insertAdjacentHTML('beforeend',`<tr><td><input type="checkbox" id="cs${i}"><td>${n}${f.includes('T')?'<sup>T</sup>':''}${f.includes('A')?'*':''}<td>${a.toUpperCase()}<td><input type="number" step="0.5" min="0" id="rk${i}"><td><input type="number" id="ms${i}"><td class="t" id="tt${i}">`));
+for(let i=0;i<=9;i++)$('spt').insertAdjacentHTML('beforeend',`<tr><td>${i}<td class="t" id="sd${i}"><td id="sx${i}"><td><input type="number" min="0" id="sb${i}"><td class="t" id="st${i}">`);
+
+const FS=`Acrobatic|sk:Jump=2,sk:Tumble=2
+Agile|sk:Balance=2,sk:Escape Artist=2
+Alertness|sk:Listen=2,sk:Spot=2
+Animal Affinity|sk:Handle Animal=2,sk:Ride=2
+Athletic|sk:Climb=2,sk:Swim=2
+Combat Casting|sk:Concentration=4|when casting defensively
+Deceitful|sk:Disguise=2,sk:Forgery=2
+Deft Hands|sk:Sleight of Hand=2,sk:Use Rope=2
+Diligent|sk:Appraise=2,sk:Decipher Script=2
+Dodge|dodge=1
+Great Fortitude|fort=2
+Improved Initiative|init=4
+Investigator|sk:Gather Information=2,sk:Search=2
+Iron Will|will=2
+Lightning Reflexes|ref=2
+Magical Aptitude|sk:Spellcraft=2,sk:Use Magic Device=2
+Negotiator|sk:Diplomacy=2,sk:Sense Motive=2
+Nimble Fingers|sk:Disable Device=2,sk:Open Lock=2
+Persuasive|sk:Bluff=2,sk:Intimidate=2
+Self-Sufficient|sk:Heal=2,sk:Survival=2
+Stealthy|sk:Hide=2,sk:Move Silently=2
+Toughness|hp=3
+Weapon Focus|atk=1|all attacks
+Greater Weapon Focus|atk=1|all attacks
+Weapon Specialization|dmg=2|all attacks
+Greater Weapon Specialization|dmg=2|all attacks
+Improved Grapple|grp=4
+Improved Critical||doubles threat range
+Point Blank Shot||+1 attack and damage within 30 ft
+Weapon Finesse||use Finesse type on light weapons
+Endurance||+4 vs exhaustion checks
+Power Attack||use the Power Attack field
+Combat Expertise||use the Combat Expertise field`;
+const FN=`Armor Proficiency (Light);Armor Proficiency (Medium);Armor Proficiency (Heavy);Shield Proficiency;Tower Shield Proficiency;Simple Weapon Proficiency;Martial Weapon Proficiency;Exotic Weapon Proficiency;Augment Summoning;Blind-Fight;Brew Potion;Cleave;Great Cleave;Combat Reflexes;Craft Magic Arms and Armor;Craft Rod;Craft Staff;Craft Wand;Craft Wondrous Item;Empower Spell;Enlarge Spell;Eschew Materials;Extend Spell;Extra Turning;Far Shot;Forge Ring;Greater Spell Focus;Greater Spell Penetration;Heighten Spell;Improved Bull Rush;Improved Counterspell;Improved Disarm;Improved Feint;Improved Overrun;Improved Precise Shot;Improved Shield Bash;Improved Sunder;Improved Trip;Improved Two-Weapon Fighting;Greater Two-Weapon Fighting;Improved Unarmed Strike;Leadership;Manyshot;Maximize Spell;Mobility;Mounted Archery;Mounted Combat;Natural Spell;Precise Shot;Quick Draw;Quicken Spell;Rapid Reload;Rapid Shot;Ride-By Attack;Run;Scribe Scroll;Shot on the Run;Silent Spell;Skill Focus;Spell Focus;Spell Mastery;Spell Penetration;Spirited Charge;Spring Attack;Still Spell;Track;Trample;Two-Weapon Defense;Two-Weapon Fighting;Whirlwind Attack;Widen Spell`;
+const FT={};
+FS.split('\n').forEach(l=>{const [n,e,d]=l.split('|');FT[n.toLowerCase()]={n:n,e:e?e.split(',').map(p=>{const q=p.split('=');return[q[0],+q[1]]}):[],d:d||''}});
+FN.split(';').forEach(n=>FT[n.toLowerCase()]={n:n,e:[],d:n=='Skill Focus'?'choose a custom effect (+3 on one skill)':''});
+$('fl').innerHTML=Object.values(FT).map(f=>`<option value="${f.n}">`).join('');
+const CT=[['hp','HP'],['init','Initiative'],['fort','Fortitude'],['ref','Reflex'],['will','Will'],['dodge','Dodge AC'],['ac','Misc AC'],['atk','Attack'],['dmg','Damage'],['spd','Speed'],['grp','Grapple']].concat(SK.map(s=>['sk:'+s[0],s[0]]));
+const CO='<option value="">Custom effect on...</option>'+CT.map(([k,l])=>`<option value="${k}">${l}</option>`).join('');
+const lab=t=>t.startsWith('sk:')?t.slice(3):(CT.find(c=>c[0]==t)||[0,t])[1];
+for(let i=0;i<14;i++)$('ftb').insertAdjacentHTML('beforeend',`<tr><td><input id="fn${i}" list="fl" size="24"><td><select id="fc${i}">${CO}</select><td><input type="number" id="fv${i}"><td id="fo${i}">`);
+const heavy=s=>{if(s<=0)return 0;if(s<=10)return 10*s;return[100,115,130,150,175,200,230,260,300,350][s%10]*Math.pow(4,Math.floor(s/10)-1)};
+function calc(){
+ const R=RACE[v('race')]||RACE.Other,sz=R.sz?1:0,M={},TT={},fx={};let nf=0;
+ for(let i=0;i<14;i++){const n=v('fn'+i).trim();if(!n){T('fo'+i,'');continue}nf++;const f=FT[n.toLowerCase()];let e=[];
+  if(f)e=f.e;else{const cv=num('fv'+i),ct=v('fc'+i);if(cv&&ct)e=[[ct,cv]]}
+  e.forEach(([t,x])=>fx[t]=(fx[t]||0)+x);
+  T('fo'+i,e.map(([t,x])=>sg(x)+' '+lab(t)).join(', ')+(f&&f.d?(e.length?' ':'')+'('+f.d+')':'')||'No automatic effect')}
+ const agT=AGE[v('race')]||[1e9,1e9,1e9],agC=agT.filter(x=>num('age')>=x).length,agN=['adult','middle age','old','venerable'][agC];
+ AB.forEach(a=>{const r=R.m[a]||0,g=AB.indexOf(a)<3?-[0,1,3,6][agC]:[0,1,2,3][agC],t=num('b_'+a)+r+num('i_'+a)+num('m_'+a)+g+num('x_'+a);TT[a]=t;M[a]=mod(t);T('r_'+a,sg(r));T('g_'+a,sg(g));T('t_'+a,t);T('d_'+a,sg(M[a]))});
+ let pts=0;AB.forEach(a=>{const b=num('b_'+a);pts+=PB[b]!==undefined?PB[b]:(b>18?16+(b-18)*4:0)});
+ T('pb',`Total = base + racial + item + bonus + aging + mod. Age category: ${agN}. Point buy cost of base scores: ${pts} (standard games use 25 to 32).`);
+ let L=0,bab=0,sv={f:0,r:0,w:0},hd=0,spp=0,first=true,hds=[];
+ for(let i=0;i<3;i++){const c=CL[v('c'+i)],l=Math.max(0,Math.floor(num('l'+i)));if(!c||!l||!c.hd)continue;
+  L+=l;bab+=Math.floor(l*c.b);
+  for(const k of['f','r','w'])sv[k]+=c[k]?Math.floor(2+l/2):Math.floor(l/3);
+  const av=Math.floor(c.hd/2)+1;hd+=first?c.hd+(l-1)*av:l*av;
+  spp+=Math.max(1,c.sp+M.int)*(first?l+3:l);first=false;hds.push(l+'d'+c.hd)}
+ if(v('race')=='Human'&&L)spp+=L+3;
+ const hp=(num('hproll')>0?num('hproll'):hd)+M.con*L+num('hpm')+(fx.hp||0);
+ T('o_hp',hp);T('o_hc',$('hpc').value===''?hp:num('hpc'));
+ T('o_bab',sg(bab));
+ // load
+ const hv=Math.floor(heavy(TT.str)*(sz?.75:1)),coins=num('pp')+num('gp')+num('sv')+num('cp'),W=num('gear')+coins/50;
+ const cat=W<=Math.floor(hv/3)?0:W<=Math.floor(hv*2/3)?1:W<=hv?2:3,cn=['Light','Medium','Heavy','Overloaded'][cat];
+ const lmd=[99,3,1,0][cat],lac=[0,3,6,6][cat];
+ const gold=num('pp')*10+num('gp')+num('sv')/10+num('cp')/100;
+ T('ldn',`Total carried: ${W.toFixed(1)} lb (coins ${(coins/50).toFixed(1)} lb), ${cn} load. Light up to ${Math.floor(hv/3)} lb, medium up to ${Math.floor(hv*2/3)} lb, heavy up to ${hv} lb. Lift overhead ${hv} lb, off ground ${hv*2} lb, push or drag ${hv*5} lb. Wealth: ${gold.toFixed(2)} gp.`);
+ let sp=R.sp+num('spm')+(fx.spd||0);if(cat>0)sp=cat==3?5:Math.round(sp*2/3/5)*5;
+ T('o_sp',sp);
+ // AC
+ const md=$('md').value===''?99:num('md'),mx=Math.min(md,lmd),dx=Math.min(M.dex,mx),acp=Math.max(num('acp'),lac),szm=sz?1:0;
+ const dgT=num('dg')+(fx.dodge||0)+num('ce'),maT=num('ma')+(fx.ac||0);
+ const ac=10+num('ar')+num('sh')+dx+szm+num('na')+num('df')+dgT+maT;
+ T('o_ac',ac);T('o_tc',10+dx+szm+num('df')+dgT+maT);T('o_ff',ac-dgT-Math.max(0,dx));
+ T('acn',(dx<M.dex?`Dex bonus capped at ${sg(mx)} by armor or load. `:'')+(acp?`Armor check penalty in effect: -${acp}. `:'')+(cat?`${cn} load slows you.`:''));
+ T('o_in',sg(M.dex+num('im')+(fx.init||0)));T('o_gr',sg(bab+M.str-(sz?4:0)+(fx.grp||0)));
+ T('o_fo',sg(sv.f+M.con+num('sf')+(fx.fort||0)));T('o_re',sg(sv.r+M.dex+num('sr')+(fx.ref||0)));T('o_wi',sg(sv.w+M.wis+num('sw')+(fx.will||0)));
+ // attacks
+ for(let i=0;i<4;i++){const [a,d]={M:['str','str'],F:['dex','str'],R:['dex',''],T:['dex','str']}[v('at'+i)];
+  const a0=bab+M[a]+szm+num('am'+i)+(fx.atk||0)-num('pa')-num('ce'),its=[];
+  for(let k=0;k<4&&bab-5*k>0;k++)its.push(sg(a0-5*k));if(!its.length)its.push(sg(a0));
+  const m=d?M[d]:0,h=parseFloat(v('ah'+i)),db=(m>0?Math.floor(m*h):m)+num('ax'+i)+(fx.dmg||0)+num('pa')*(h==1.5?2:1);
+  T('ao'+i,its.join('/'));T('ag'+i,(v('ad'+i)||'\u2013')+(db?sg(db):''))}
+ // skills
+ let spent=0;
+ SK.forEach(([n,a,f],i)=>{const r=num('rk'+i),cs=$('cs'+i).checked;
+  const t=r+(a?M[a]:0)+num('ms'+i)+(fx['sk:'+n]||0)+(cs&&r>0?3:0)-(f.includes('A')?acp:0)+(n=='Hide'&&sz?4:0);
+  T('tt'+i,f.includes('T')&&r==0?'\u2013':sg(t));spent+=cs?r:2*r;
+  $('rk'+i).classList.toggle('bad',r>(cs?L+3:(L+3)/2))});
+ T('skn',`Skill points spent: ${spent} of ${spp}${spent>spp?' (over budget)':''}. Max ranks: ${L+3} class skill, ${(L+3)/2} cross-class (cross-class ranks cost 2 points each).`);
+ $('skn').style.color=spent>spp?'var(--bad)':'';
+ // spells
+ const sa=v('spa'),sm=M[sa],ss=TT[sa];
+ for(let i=0;i<=9;i++){const ok=ss>=10+i,bn=i&&sm>=i?Math.floor((sm-i)/4)+1:0,bs=$('sb'+i).value;
+  T('sd'+i,ok?10+i+sm:'\u2013');T('sx'+i,ok?(i?'+'+bn:'\u2013'):'needs '+(10+i));T('st'+i,ok&&bs!==''?num('sb'+i)+bn:'\u2013')}
+ // summary
+ const xp=num('xp'),nx=L*(L+1)/2*1000;
+ T('sum',L?`Character level ${L}. Hit dice ${hds.join(' + ')}. Next level at ${nx.toLocaleString()} XP${xp>=nx?' (ready to level up)':''}. Feats chosen: ${nf} of ${1+Math.floor(L/3)+(v('race')=='Human'?1:0)}. Ability increases: ${Math.floor(L/4)}. Racial speed ${R.sp} ft, ${sz?'Small':'Medium'}.`:'Pick a class and level to begin.');
+}
+const KEY='dnd35-sheet';
+const save=()=>{try{const s={};document.querySelectorAll('input,select,textarea').forEach(e=>{if(e.id)s[e.id]=e.type=='checkbox'?e.checked:e.value});localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}};
+const load=()=>{try{const s=JSON.parse(localStorage.getItem(KEY)||'{}');for(const k in s){const e=$(k);if(!e)continue;if(e.type=='checkbox')e.checked=s[k];else e.value=s[k]}}catch(e){}};
+document.addEventListener('input',()=>{calc();save()});
+document.addEventListener('change',()=>{calc();save()});
+$('rs').onclick=()=>{if(!confirm('Clear the whole sheet?'))return;document.querySelectorAll('input,select,textarea').forEach(e=>{if(e.type=='checkbox')e.checked=e.defaultChecked;else if(e.tagName=='SELECT')e.selectedIndex=Math.max(0,[...e.options].findIndex(o=>o.defaultSelected));else e.value=e.defaultValue});try{localStorage.removeItem(KEY)}catch(e){}calc()};
+load();calc();
+</script></body></html>
